@@ -1,0 +1,365 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface Iterable
+interface EventHandler
+
+package ecouteurs{
+
+class EcouteurArc{
+    + EcouteurArc(m : MondeIG, arcIG : ArcIG)
+    + handle(mouseEvent : MouseEvent) : void
+}
+
+class EcouteurRenommer{
+    + EcouteurRenommer(m : MondeIG)
+    + handle(actionEvent : ActionEvent) : void
+}
+
+class EcouteurDelai{
+    + EcouteurDelai(m : MondeIG)
+    + handle(actionEvent : ActionEvent) : void
+}
+
+class EcouteurBouton{
+    - noE : int
+    + EcouteurBouton(m : MondeIG)
+    + handle(event : Event) : void
+}
+
+class EcouteurDnDMondeFini{
+    + EcouteurDnDMondeFini(mondeIG : MondeIG, vueMondeIG : VueMondeIG)
+    + handle(dragEvent : DragEvent) : void
+}
+
+class EcouteurDnDEtape{
+    + EcouteurDnDEtape(m : MondeIG, e : VueEtapeIG)
+    + handle(mouseEvent : MouseEvent) : void
+}
+
+class EcouteurDnDMonde{
+    + EcouteurDnDMonde(m : MondeIG, v : VueMondeIG)
+    + handle(dragEvent : DragEvent) : void
+}
+
+class EcouteurSupprimer{
+    + EcouteurSupprimer(mondeIG : MondeIG)
+    + handle(actionEvent : ActionEvent) : void
+}
+
+class EcouteurEcart{
+    + EcouteurEcart(m : MondeIG)
+    + handle(actionEvent : ActionEvent) : void
+}
+
+class EcouteurEtape{
+    + EcouteurEtape(m : MondeIG, etapeIG : EtapeIG)
+    + handle(mouseEvent : MouseEvent) : void
+}
+
+class EcouteurPointDeControle{
+    + EcouteurPointDeControle(mondeIG : MondeIG, p : PointDeControleIG)
+    + handle(mouseEvent : MouseEvent) : void
+}
+
+}
+
+package exceptions{
+
+class EcartDelaiException{
+    + EcartDelaiException()
+}
+
+class ArcException{
+    + ArcException()
+}
+
+class TwiskException{
+}
+
+}
+
+package vues{
+
+
+class VuePointDeControleIG{
+    + VuePointDeControleIG(mondeIG : MondeIG, p : PointDeControleIG)
+    + reagir() : void
+}
+
+
+
+interface Observateur{
+    + reagir() : void
+}
+
+
+
+class VueActiviteIG{
+    + VueActiviteIG(monde : MondeIG, etape : EtapeIG)
+    + reagir() : void
+}
+
+class VueMondeIG{
+    + VueMondeIG(m : MondeIG)
+    + reagir() : void
+}
+
+abstract class VueEtapeIG{
+    - label : Label
+    + VueEtapeIG(monde : MondeIG, etape : EtapeIG)
+    + getEtapeIG() : EtapeIG
+}
+
+class VueOutils{
+    - buttons : ArrayList<Button>
+    + VueOutils(m : MondeIG)
+    + reagir() : void
+}
+
+class VueMenu{
+    - mItR : MenuItem
+    + VueMenu(m : MondeIG)
+    + reagir() : void
+}
+
+
+class TailleComposants{
+    - {static} instance : TailleComposants
+    - TailleComposants()
+    + {static} getInstance() : TailleComposants
+    + hBoxHeight() : int
+    + VBoxHeigth() : int
+    + VBoxWidth() : int
+}
+
+class VueArcIG{
+
+}
+
+}
+
+
+package mondeIG{
+
+class MondeIG{
+    + MondeIG()
+    + ajouter(type : String) : void
+    + ajouterPDCTempo(p : PointDeControleIG) : void
+    + ajouter(pt1 : PointDeControleIG, pt2 : PointDeControleIG) : void
+    + iterator() : Iterator<EtapeIG>
+    + iteratorArc() : Iterator<ArcIG>
+    + getNbEtapes() : int
+    + etpSelect(add : String) : void
+    + supprimerArc() : void
+    + deselectTout() : void
+    + selectTout() : void
+    + changeDelaiEtapeSelct(newDelai : String) : void
+    + changeEcartEtapeSelct(newEcart : String) : void
+    + renommeEtapeSelct(newName : String) : void
+    + arcSelct() : boolean
+    + setEntree() : void
+    + setSortie() : void
+    + getNbEtapeSlect() : int
+    + suppEtapSelect() : void
+}
+
+class ActiviteIG{
+    + ActiviteIG(nom : String, larg : int, haut : int)
+}
+
+class PointDeControleIG{
+    - centerX : int
+    - id : String
+    + PointDeControleIG(e : EtapeIG, x : int, y : int, s : String)
+    + getCenterX() : int
+    + setCenterX(centerX : int) : void
+    + getCenterY() : int
+    + setCenterY(centerY : int) : void
+    + getEtapeIG() : EtapeIG
+    + setEtapeIG(etapeIG : EtapeIG) : void
+    + getId() : String
+    + setId(id : String) : void
+}
+
+abstract class EtapeIG{
+    - nom : String
+    - posX : int
+    - in : boolean
+    + EtapeIG(nom : String, largeur : int, hauteur : int)
+    + isSelct() : boolean
+    + setSelct(selct : boolean) : void
+    + getDelai() : int
+    + setDelai(delai : int) : void
+    + getEcart() : int
+    + setEcart(ecart : int) : void
+    + isIn() : boolean
+    + setIn(in : boolean) : void
+    + isOut() : boolean
+    + setOut(out : boolean) : void
+    + getIdentifiant() : String
+    + getPosX() : int
+    + setPosX(posX : int) : void
+    + getPosY() : int
+    + setPosY(posY : int) : void
+    + getLargeur() : int
+    + setLargeur(largeur : int) : void
+    + getHauteur() : int
+    + setHauteur(hauteur : int) : void
+    + getNom() : String
+    + setNom(nom : String) : void
+    + reinitPdc() : void
+    + iterator() : Iterator<PointDeControleIG>
+}
+
+class ArcIG{
+    - estSelectionne : boolean
+    + ArcIG(pdc1 : PointDeControleIG, pdc2 : PointDeControleIG)
+    + getPdc1() : PointDeControleIG
+    + setPdc1(pdc1 : PointDeControleIG) : void
+    + getPdc2() : PointDeControleIG
+    + setPdc2(pdc2 : PointDeControleIG) : void
+    + isEstSelectionne() : boolean
+    + setEstSelectionne(estSelectionne : boolean) : void
+    + getX1() : int
+    + getY1() : int
+    + getX2() : int
+    + getY2() : int
+}
+
+}
+
+package outils{
+
+class FabriqueIdentifiant{
+    - {static} instance : FabriqueIdentifiant
+    - noEtape : int
+    - FabriqueIdentifiant()
+    + {static} getInstance() : FabriqueIdentifiant
+    + getCptEtape() : String
+}
+
+}
+
+
+EcartDelaiException --|> TwiskException
+
+
+VuePointDeControleIG ..|> Observateur
+VuePointDeControleIG --|> Circle
+
+EcouteurArc ..|> EventHandler
+
+
+MondeIG ..|> Iterable
+MondeIG --|> SujetObserver
+
+
+EcouteurDnDMondeFini ..|> EventHandler
+
+
+ActiviteIG --|> EtapeIG
+
+
+EcouteurDnDEtape ..|> EventHandler
+
+
+
+
+ArcException --|> TwiskException
+
+
+EcouteurRenommer ..|> EventHandler
+
+
+EcouteurDnDMonde ..|> EventHandler
+
+
+VueActiviteIG --|> VueEtapeIG
+
+
+VueEtapeIG ..|> Observateur
+VueEtapeIG --|> VBox
+
+
+MondeIG --"2" PointDeControleIG
+MondeIG --"*" EtapeIG
+MondeIG --"*" ArcIG
+
+EcouteurSupprimer ..|> EventHandler
+
+
+EcouteurEcart ..|> EventHandler
+
+
+EcouteurDelai ..|> EventHandler
+
+
+TwiskException --|> Exception
+class MainTwisk{
+    + start(stage : Stage) : void
+}
+
+MainTwisk --|> Application
+
+Observateur "*"--"1" SujetObserver
+
+
+VueArcIG ..|> Observateur
+VueArcIG --|> Group
+
+
+VueMondeIG ..|> Observateur
+VueMondeIG --|> Pane
+
+
+EtapeIG ..|> Iterable
+
+
+VueOutils ..|> Observateur
+VueOutils --|> TilePane
+class SujetObserver{
+    - obs : ArrayList<Observateur>
+    + ajouterObservateur(v : Observateur) : void
+    + notifierObservateurs() : void
+}
+
+
+
+EcouteurEtape ..|> EventHandler
+
+
+
+EcouteurBouton ..|> EventHandler
+
+
+EcouteurPointDeControle ..|> EventHandler
+
+
+VueMenu ..|> Observateur
+VueMenu --|> MenuBar
+VuePointDeControleIG--"1" PointDeControleIG
+EcouteurArc--"1" MondeIG
+EcouteurArc--"1" ArcIG
+EcouteurDnDMondeFini--"1" MondeIG
+EcouteurDnDMondeFini--"1" VueMondeIG
+EcouteurDnDEtape--"1" VueEtapeIG
+PointDeControleIG "4"--"1" EtapeIG
+FabriqueIdentifiant--"- {static} instance" FabriqueIdentifiant
+EcouteurRenommer--"1" MondeIG
+VueEtapeIG--"1" EtapeIG
+EcouteurSupprimer--"1" MondeIG
+EcouteurEcart--"1" MondeIG
+EcouteurDelai--"1" MondeIG
+TailleComposants--"- {static} instance" TailleComposants
+VueArcIG-- "1" ArcIG
+
+EcouteurEtape--"1" MondeIG
+EcouteurEtape--"1" EtapeIG
+ArcIG--"2" PointDeControleIG
+EcouteurBouton--"1" MondeIG
+EcouteurPointDeControle--"1" MondeIG
+EcouteurPointDeControle--"1" PointDeControleIG
+VueMenu--"1" MondeIG
+
+@enduml

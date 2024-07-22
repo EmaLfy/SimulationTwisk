@@ -1,0 +1,154 @@
+@startuml
+class twisk.monde.Activite{
+    + int temps;
+    + int ecartTemps;
+    - boolean estUneActivite()
+    - int getTemps()
+    - int getEcartTemps()
+    - String toC()
+    - int getNbJetons()
+}
+class twisk.monde.ActiviteRestreinte{
+    - String toC()
+}
+abstract class twisk.monde.Etape{
+    +private GestionnaireEtapes succ
+    +private String nom
+    + private int idEtape
+    - Etape(String nom)
+    - void ajouterSuccesseur(Etape... successeur)
+    - boolean estUneActivite()
+    - boolean estUnGuichet()
+    - int getNbSucc()
+    - String getNom()
+    - GestionnaireEtapes getSucc()
+    - int getIdEtape()
+    - int getTemps()
+    - int getEcartTemps()
+    - int getIdSemaphore()
+    - String toC()
+    - int getNbJetons()
+    - Iterator<Etape> iterator()
+    - String toString()
+}
+
+class twisk.monde.GestionnaireEtapes{
+    + private ArrayList<Etape> all_etapes;
+    - GestionnaireEtapes()
+    - void ajouter(Etape... etapes)
+    - int nbEtapes()
+    - Etape getEtapeSucc()
+    - Iterator<Etape> iterator()
+}
+
+class twisk.monde.Guichet{
+    + int nbJetons
+    + int semaphore
+    - Guichet(String nom)
+    - Guichet(String nom, int nb)
+    - boolean estUnGuichet()
+    - String toC()
+    - int getNbJetons()
+    - int getIdSemaphore()
+}
+class twisk.monde.Monde{
+    + SasEntree entree;
+    + SasSortie sortie;
+    + GestionnaireEtapes lesEtapes;
+    - void aCommeEntree(Etape... etapes)
+    - void aCommeSortie(Etape... etapes)
+    - void ajouter(Etape... etapes)
+    - int nbEtapes()
+    - int nbGuichets()
+    - SasEntree getEntree()
+    - SasSortie getSortie()
+    - GestionnaireEtapes getLesEtapes()
+    - String toC()
+    - Iterator<Etape> iterator()
+}
+
+class twisk.monde.SasEntree{
+    + int loi;
+    - String toC()
+}
+class twisk.monde.SasSortie{
+    - String toC()
+}
+
+interface Iterable{
+    + Iterator<Etape> iterator()
+}
+
+Activite --|> Etape
+Guichet --|> Etape
+ActiviteRestreinte --|> Activite
+SasEntree --|> Activite
+SasSortie --|> Activite
+Monde -- "1" GestionnaireEtapes
+GestionnaireEtapes --  Etape
+Monde -- "1" SasEntree
+Monde -- "1" SasSortie
+Monde ..|> Iterable
+GestionnaireEtapes ..|> Iterable
+Etape ..|> Iterable
+
+class twisk.simulation.Client{
+    + int numeroClient
+    + int rang
+    + Etape etape
+    - void allerA(Etape etape, int rang)
+    - int getNumeroClient()
+    - Etape getEtape()
+    - int getRang()
+}
+
+class twisk.simulation.GestionnaireClients{
+    + ArrayList<Client> clients;
+    - void setClients(int ... tabClients)
+    - void allerA(int numeroClient, Etape etape, int rang)
+    - void nettoyer()
+    - Iterator<Client> iterator()
+    - int nbClients()
+}
+
+class twisk.simulation.Simulation{
+    + int nbClients;
+    + GestionnaireClients clients;
+    - void simuler(Monde m)
+    - int getNbClients()
+    - void setNbClients(int nbClient)
+    - native int[] start_simulation(int nbEtapes, int nbGuichets, int nbClients, int[] tabJetons);
+    - native int[] ou_sont_les_clients(int nbEtape, int nbClients);
+    - native void nettoyage();
+    - int[] nombre_jeton(Monde m)
+    - int afficher_proc(int[] liste, int nbEtapes, int nbClients, Monde m)
+    - int main(Monde m)
+}
+
+Client -- GestionnaireClients
+Simulation -- GestionnaireClients
+
+class twisk.outils.CorrespondancesEtapes{
+    + private HashMap<EtapeIG, Etape> correspondance
+    - void ajouter(EtapeIG etapeIG, Etape etape)
+    - Etape getEtape(EtapeIG etapeIG)
+}
+
+class twisk.outils.KitC{
+    - void creerEnvironnement()
+    - void creerCodeNatif()
+    - void copieCodeNatif()
+    - void creerFichier(String codeC)
+    - void compiler()
+    - void construireLaBibliotheque()
+}
+
+class twisk.outils.ClassLoaderPerso{
+    - Class<?> loadClass(String name)
+}
+
+class twisk.mondeIG.EtapeIG{}
+
+CorrespondancesEtapes -- EtapeIG
+CorrespondancesEtapes -- Etape
+@enduml
